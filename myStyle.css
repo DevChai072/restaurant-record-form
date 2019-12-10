@@ -1,0 +1,59 @@
+.container {
+    margin: 30px 60px;
+    padding: 20px;
+    /* background-color: lightblue; */
+    box-sizing: border-box;
+    font-size: 18px;
+}
+
+div.titleForm h1 {
+    font-weight: bold;
+    font-size: 2em;
+    text-transform: uppercase; /* set uppercase */
+}
+
+div.formBlock {
+    display: block;
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+
+select#slctTypeFood, select#slctInputTypeFood {
+    font-size: 1em;
+    width: 100px;
+}
+
+table#tableJquery {
+    display: table;
+    border-collapse: collapse;
+    border-spacing: 0;
+    width: 100%;
+}
+
+table#tableJquery tr, th, td {
+    border: 1px solid rgb(190, 190, 190);
+}
+
+table#tableJquery th {
+    background-color: #ffd800;
+    color: #ffffff;
+    padding: 15px;
+}
+
+table#tableJquery tr, td {
+    padding: 10px;
+}
+
+div.form-group {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+button#btnSave, button#btnCancel {
+    padding-right: 10px;
+    padding-left: 10px;
+}
+
+div.formViewMenu {
+    display: none;
+}

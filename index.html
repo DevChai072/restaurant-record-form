@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Web Service</title>
+    <link rel="stylesheet" href="./myStyle.css">
+</head>
+<body>
+    <div class="container">
+        <!-- title -->
+        <div class="titleForm">
+            <h1>restaurant record form</h1>
+        </div>
+        <!-- end title -->
+
+        <!-- select type food -->
+        <div class="formBlock">
+            <label>Select Type : </label>
+            <select id="selectTypeRestaurant"></select>
+        </div>
+        <!-- select type food -->
+
+        <!-- talble jquery -->
+        <table id="tableJquery">
+            <thead>
+                <tr>
+                    <th width="30%">Name</th>
+                    <th width="30%">Type</th>
+                    <th width="20%" colspan="3"></th>
+                </tr>
+            </thead>
+            <tbody id="dataContent"></tbody>
+        </table>
+        <!-- end talble jquery -->
+
+        <!-- button add new restaurant -->
+        <div class="formBlock">
+            <button id="btnAddNewRestaurant">Add New Restaurant</button>
+        </div>
+        <!-- end button add new restaurant -->
+
+        <div class="formBlock">
+            <div class="form-group">
+                <label>Name : </label>
+                <input type="hidden" id="txtInputIdHidden">
+                <input type="text" id="txtInputRestaurantName" required>
+            </div>
+            <div class="form-group">
+                <label>Type : </label>
+                <select id="selectInputTypeFood"></select>
+            </div>
+            <div class="form-group">
+                <label>Detail : </label><br>
+                <textarea id="txtInputDetail" cols="100" rows="10"></textarea>
+            </div>
+            <div class="form-group">
+                <button id="btnSave" data-status="save">Save</button>
+                <button id="btnCancel">Cancel</button>
+            </div>
+        </div>
+
+        <div class="formViewMenu">
+            <hr class="hrDotted">
+            <!-- title -->
+            <div class="titleForm">
+                <h3 id="titleNameRestaurant"></h3>
+            </div>
+            <!-- end title -->
+
+            <div class="formBlock">
+                <label>Select Menu Type : </label>
+                <select id="selectFoodType"></select>
+            </div>
+    
+            <!-- talble jquery -->
+            <table id="tableViewMenu">
+                <tr>
+                    <th width="30%">Name</th>
+                    <th width="25%">Type</th>
+                    <th width="30%">Price(Baht)</th>
+                    <th width="15%" colspan="2"></th>
+                </tr>
+            </table>
+            <!-- end talble jquery -->
+
+            <!-- button add new menu -->
+            <div class="formBlock">
+                <button id="btnAddNewMenu">Add New Menu</button>
+            </div>
+            <!-- end button add new menu -->
+
+            <div class="formBlock">
+                <div class="form-group">
+                    <label>Name : </label>
+                    <input type="text" id="txtInputFoodName" required>
+                    <input type="hidden" id="txtInputFoodIdHidden">
+                    <input type="hidden" id="txtInputRestaurantIdHidden">
+                </div>
+                <div class="form-group">
+                    <label>Type : </label>
+                    <select id="selectInputFoodType"></select>
+                </div>
+                <div class="form-group">
+                    <label>Price : </label>
+                    <input type="number" id="txtInputFoodPrice" required>
+                    <label>Baht</label>
+                </div>
+                <div class="form-group">
+                    <button id="btnSaveMenu" data-status="saveMenu">Save</button>
+                    <button id="btnCancelMenu">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="./jquery-3.4.1.js"></script>
+    <script src="./myScript.js"></script>
+    <script>
+        $(document).ready(function() {
+            
+            createDataSelectType();
+
+            tableJquery();
+
+            btnAddNewForm(); // reset form input before add new data
+            
+            saveData(); // click to {save} new data and {edit}
+            
+            cancelData(); // click to {cancel}
+
+        });
+    </script>
+
+</body>
+</html>
