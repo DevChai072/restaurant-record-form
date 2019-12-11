@@ -66,24 +66,6 @@ function createDataSelectType() {
         optionModel[optionModel.length] = new Option(value.name, value.id);
         selectInputModel[selectInputModel.length] = new Option(value.name, value.id);
     });
-
-    // get data from api {food type}
-    var foodCategory = getApiRestaurant("foodcategory/all");
-
-    // tag {selectFoodType}
-    var selectModelViewMenu = $("#selectFoodType");
-    var optionModelViewMenu = selectModelViewMenu.prop('options');
-    optionModelViewMenu[optionModelViewMenu.length] = new Option("All", "all");
-
-    // tag {selectInputFoodType}
-    var selectInputModelMenu = $("#selectInputFoodType");
-    var selectInputModelMenu = selectInputModelMenu.prop('options');
-
-    // put data to option
-    $.each(foodCategory, function(index, value) {
-        optionModelViewMenu[optionModelViewMenu.length] = new Option(value.categoryName, value.categoryId);
-        selectInputModelMenu[selectInputModelMenu.length] = new Option(value.categoryName, value.categoryId);
-    });
 }
 
 /**
@@ -91,11 +73,14 @@ function createDataSelectType() {
  * dev Somchai O00085
  */
 function tableJquery() {
-    // for focus tag select in option
-    var restaurantTypeId = $("#selectTypeRestaurant").val();
+    // for assign defualt value in select type
+    // $("select#selectTypeRestaurant option[value='all']").attr("selected", "selected");
 
+    // for focus tag select in option
+    var selectRestaurantTypeId = "all";
+    
     // create data on table
-    createDataOnTableJuery(restaurantTypeId);
+    createDataOnTableJuery(selectRestaurantTypeId);
 }
 
 /**
@@ -180,8 +165,6 @@ function createDataOnTableJuery(selectRestaurantTypeId) {
         }
     });
 
-    // console.log($(tableName + " tr").length)
-
     // display not found data on table
     notFoundDataInTable();
 
@@ -214,9 +197,6 @@ function saveData() {
         // get data from attr button save
         attrButton = $(this).attr("data-status");
 
-        // for focus tag select in option
-        $("select#selectTypeRestaurant option[value='all']").attr("selected", "selected");
-
         // get data from prepare {formData}
         prepareDataInForm();
         
@@ -237,8 +217,12 @@ function saveData() {
                     // send data to api
                     sendDataToApi("restaurant/create", jsonData);
                     
+                    // for assign defualt value in select type
+                    $("#selectTypeRestaurant").find("option:eq(0)").prop("selected", true);
+                    var selectRestaurantTypeId = $("#selectTypeRestaurant").val();
+
                     // create data on table
-                    createDataOnTableJuery("all");
+                    createDataOnTableJuery(selectRestaurantTypeId);
 
                     // clear data in form input
                     clearValueFormInput();
@@ -260,8 +244,12 @@ function saveData() {
                     // send parameter {url} and {json data}
                     sendDataToApi("restaurant/update", jsonData);
 
+                    // for assign defualt value in select type
+                    $("#selectTypeRestaurant").find("option:eq(0)").prop("selected", true);
+                    var selectRestaurantTypeId = $("#selectTypeRestaurant").val();
+
                     // create data on table
-                    createDataOnTableJuery("all");
+                    createDataOnTableJuery(selectRestaurantTypeId);
 
                     // clear data in form input
                     clearValueFormInput();
@@ -303,8 +291,12 @@ function saveData() {
                     // send data to api for create new menu
                     sendDataToApi("food/create", jsonData);
 
+                    // for assign defualt value in select type
+                    $("#selectFoodType").find("option:eq(0)").prop("selected", true);
+                    var selectFoodTypeId = $("#selectFoodType").val();
+
                     // create data on table {tableViewMenu}
-                    createDataOnTableViewMenu(jsonData.restaurantId, "all");
+                    createDataOnTableViewMenu(jsonData.restaurantId, selectFoodTypeId);
 
                     // clear data in form input
                     clearValueFormInputMenu();
@@ -327,8 +319,12 @@ function saveData() {
                     // send parameter {url} and {json data}
                     sendDataToApi("food/update", jsonData);
 
+                    // for assign defualt value in select type
+                    $("#selectFoodType").find("option:eq(0)").prop("selected", true);
+                    var selectFoodTypeId = $("#selectFoodType").val();
+
                     // create data on table {tableViewMenu}
-                    createDataOnTableViewMenu(jsonData.restaurantId, "all");
+                    createDataOnTableViewMenu(jsonData.restaurantId, selectFoodTypeId);
 
                     // clear data in form input
                     clearValueFormInputMenu();
@@ -373,8 +369,6 @@ function deleteToRows(id) {
     var isValidId = resultData[0].restaurantId != 0;
 
     if (isValidId) {
-        // get value selected from select type restaurant
-        var selectTypeRestaurantId = $("#selectTypeRestaurant").find("option:selected").val();
 
         var confirmAlert = confirm("ต้องการลบข้อมูลหรือไม่");
         if (confirmAlert == true) {
@@ -383,11 +377,12 @@ function deleteToRows(id) {
             // send data to api
             sendDataToApi("restaurant/delete", jsonData);
 
-            // for focus tag select in option
-            $("#selectTypeRestaurant option[value='"+ selectTypeRestaurantId +"']").attr("selected", "selected");
+            // for assign defualt value in select type
+            $("#selectTypeRestaurant").find("option:eq(0)").prop("selected", true);
+            var selectRestaurantTypeId = $("#selectTypeRestaurant").val();
 
             // create data on table
-            createDataOnTableJuery(selectTypeRestaurantId);
+            createDataOnTableJuery(selectRestaurantTypeId);
 
             // close all element of view Menu {after remove item}
             $("div.formViewMenu").hide();
@@ -508,8 +503,13 @@ function viewMenuToRows(restaurantId) {
     // put value in form input hidden
     $("#txtInputRestaurantIdHidden").val(restaurantId);
 
+    createDataSelectTypeFood();
+
+    // for assign defualt value in select type
+    $("#selectFoodType").find("option:eq(0)").prop("selected", true);
+
     // display data on table {tableViewMenu}
-    tableViewMenu(restaurantId);
+    showTableViewMenu(restaurantId);
 }
 
 /**
@@ -517,10 +517,10 @@ function viewMenuToRows(restaurantId) {
  * dev Somchai O00085
  * @param {*} resultRestaurantById
  */
-function tableViewMenu(restaurantId) {
-
-    // get value from element select
-    var selectFoodTypeId = $("#selectFoodType").find("option:selected").val();
+function showTableViewMenu(restaurantId) {
+    // for assign defualt value in select type
+    $("#selectFoodType").find("option:eq(0)").prop("selected", true);
+    var selectFoodTypeId = $("#selectFoodType").val();
 
     // create data on table {table ViewMenu}
     createDataOnTableViewMenu(restaurantId, selectFoodTypeId);
@@ -546,6 +546,30 @@ $("#selectFoodType").change(function() {
     // display not found data on table
     notFoundDataInTableMenu();
 });
+
+/**
+ * function for create data on select type food
+ * dev Somchai O00085
+ */
+function createDataSelectTypeFood() {
+    // get data from api {food type}
+    var foodCategory = getApiRestaurant("foodcategory/all");
+
+    // tag {selectFoodType}
+    var selectModelViewMenu = $("#selectFoodType");
+    var optionModelViewMenu = selectModelViewMenu.prop('options');
+    optionModelViewMenu[optionModelViewMenu.length] = new Option("All", "all");
+
+    // tag {selectInputFoodType}
+    var selectInputModelMenu = $("#selectInputFoodType");
+    var selectInputModelMenu = selectInputModelMenu.prop('options');
+
+    // put data to option
+    $.each(foodCategory, function(index, value) {
+        optionModelViewMenu[optionModelViewMenu.length] = new Option(value.categoryName, value.categoryId);
+        selectInputModelMenu[selectInputModelMenu.length] = new Option(value.categoryName, value.categoryId);
+    });
+}
 
 /**
  * function for create data on table {tableViewMenu}
@@ -589,6 +613,9 @@ function createDataOnTableViewMenu(restaurantId, selectFoodTypeId) {
             }
         });
 
+        // display not found data on table
+        notFoundDataInTableMenu();
+
     } else {
         // display not found data on table
         notFoundDataInTableMenu();
@@ -631,7 +658,10 @@ function deleteVmToRows(foodId, restaurantId) {
         sendDataToApi("food/delete", jsonData);
 
         // get value from element select
-        var selectFoodTypeId = $("#selectFoodType").find("option:selected").val();
+        // var selectFoodTypeId = $("#selectFoodType").find("option:selected").val();
+        // for assign defualt value in select type
+        $("#selectFoodType").find("option:eq(0)").prop("selected", true);
+        var selectFoodTypeId = $("#selectFoodType").val();
 
         // create data on table
         createDataOnTableViewMenu(restaurantId, selectFoodTypeId);
