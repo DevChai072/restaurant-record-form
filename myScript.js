@@ -122,17 +122,57 @@ function createDataOnTableJuery(selectRestaurantTypeId) {
     // reset row data in table
     resetTableJquery();
 
+    // $.each(restaurant, function(index, val) {
+    //     // variable on table {tableJquery}
+    //     var restaurantId = val.restaurantId;
+    //     var restaurantName = val.restaurantName;
+    //     var restaurantTypeId = val.restaurantTypeId;
+    //     var restaurantTypeName = val.restaurantTypeName;
+
+    //     var syntaxRows = "<tr>";
+    //     // field {Name}
+    //     syntaxRows += "<td>" + restaurantName + "</td>";
+    //     // field {Type}
+    //     syntaxRows += "<td>" + restaurantTypeName + "</td>";
+    //     // field button {view menu}
+    //     syntaxRows += "<td><button class='btnAct' id='btnVm-"+ index +"' onclick='viewMenuToRows("+ restaurantId +")'>View Menu</button></td>";
+    //     // field button {edit}
+    //     syntaxRows += "<td><button class='btnAct' id='btnEdit-"+ index +"' onclick='editToRows("+ restaurantId +")'>Edit</button></td>";
+    //     // field button {delete}
+    //     syntaxRows += "<td><button class='btnAct' id='btnDel-"+ index +"' onclick='deleteToRows("+ restaurantId +")'>Delete</button></td>";
+    //     syntaxRows += "</tr>";
+
+    //     var isAddRow = (selectRestaurantTypeId === "all") || (selectRestaurantTypeId == restaurantTypeId); // return true or false
+    //     if (isAddRow) {
+    //         $("#tableJquery tr:last").after(syntaxRows);
+    //         setCss(); // set css for element in table
+    //     }
+    // });
+
+    var tableName = "#tableJquery";
+
     $.each(restaurant, function(index, val) {
         // variable on table {tableJquery}
         var restaurantId = val.restaurantId;
         var restaurantName = val.restaurantName;
         var restaurantTypeId = val.restaurantTypeId;
         var restaurantTypeName = val.restaurantTypeName;
-        var syntaxRows = "<tr><td>" + restaurantName + "</td><td>" + restaurantTypeName + "</td><td><button class='btnAct' id='btnVm-"+ index +"' onclick='viewMenuToRows("+ restaurantId +")'>View Menu</button></td><td><button class='btnAct' id='btnEdit-"+ index +"' onclick='editToRows("+ restaurantId +")'>Edit</button></td><td><button class='btnAct' id='btnDel-"+ index +"' onclick='deleteToRows("+ restaurantId +")'>Delete</button></td></tr>";
+
+        var syntaxRows = "<tr><td></td><td></td><td></td><td></td><td></td></tr>";
+
         var isAddRow = (selectRestaurantTypeId === "all") || (selectRestaurantTypeId == restaurantTypeId); // return true or false
-        
         if (isAddRow) {
-            $("#tableJquery tr:last").after(syntaxRows);
+            $(tableName + " tr:last").after(syntaxRows);
+
+            var rowId = index;
+            rowId++;
+
+            $(tableName + " tr:eq("+ rowId +")").find("td:eq(0)").text(restaurantName);
+            $(tableName + " tr:eq("+ rowId +")").find("td:eq(1)").text(restaurantTypeName);
+            $(tableName + " tr:eq("+ rowId +")").find("td:eq(2)").append("<button class='btnAct' id='btnVm-"+ index +"' onclick='viewMenuToRows("+ restaurantId +")'>View Menu</button>");
+            $(tableName + " tr:eq("+ rowId +")").find("td:eq(3)").append("<button class='btnAct' id='btnEdit-"+ index +"' onclick='editToRows("+ restaurantId +")'>Edit</button>");
+            $(tableName + " tr:eq("+ rowId +")").find("td:eq(4)").append("<button class='btnAct' id='btnDel-"+ index +"' onclick='deleteToRows("+ restaurantId +")'>Delete</button>");
+
             setCss(); // set css for element in table
         }
     });
@@ -503,17 +543,32 @@ function createDataOnTableViewMenu(restaurantId, selectFoodTypeId) {
     // put text to tag title Restaurant name menu <h3>
     $("h3#titleNameRestaurant").text(resultRestaurantById.restaurantName);
 
-    if (resultRestaurantById.food !== null) {
-        // has data in resultRestaurantById >> food
+    if (resultRestaurantById.food !== null) { // has data in resultRestaurantById >> food
+
+        var tableName = "#tableViewMenu";
+
         $.each(resultRestaurantById.food, function(index, val) {
-            var foodData = searchFood(val);
-            var syntaxRows = "<tr><td>"+ foodData.foodName +"</td><td>"+ foodData.categoryName +"</td><td>"+ foodData.price +"</td><td><button class='btnActVm' id='btnEditVm-"+ index +"' onclick='editVmToRows("+ foodData.foodId +", "+ resultRestaurantById.restaurantId +")'>Edit</button></td><td><button class='btnActVm' id='btnDelVm-"+ index +"' onclick='deleteVmToRows("+ foodData.foodId +", "+ resultRestaurantById.restaurantId +")'>Delete</button></td></tr>";
+            var foodData = searchFood(val); // get food data 
+
+            var syntaxRows = "<tr><td></td><td></td><td></td><td></td><td></td></tr>";
+
             var isAddRow = (selectFoodTypeId === "all") || (selectFoodTypeId == foodData.categoryId);
             if (isAddRow) {
                 $("#tableViewMenu tr:last").after(syntaxRows);
+
+                var rowId = index;
+                rowId++;
+
+                $(tableName + " tr:eq("+ rowId +")").find("td:eq(0)").text(foodData.foodName);
+                $(tableName + " tr:eq("+ rowId +")").find("td:eq(1)").text(foodData.categoryName);
+                $(tableName + " tr:eq("+ rowId +")").find("td:eq(2)").text(foodData.price);
+                $(tableName + " tr:eq("+ rowId +")").find("td:eq(3)").append("<button class='btnActVm' id='btnEditVm-"+ index +"' onclick='editVmToRows("+ foodData.foodId +", "+ resultRestaurantById.restaurantId +")'>Edit</button>");
+                $(tableName + " tr:eq("+ rowId +")").find("td:eq(4)").append("<button class='btnActVm' id='btnDelVm-"+ index +"' onclick='deleteVmToRows("+ foodData.foodId +", "+ resultRestaurantById.restaurantId +")'>Delete</button>");
+
                 setCss();
             }
         });
+
     } else {
         // display not found data on table
         notFoundDataInTableMenu();
