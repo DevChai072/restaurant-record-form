@@ -96,18 +96,22 @@ function tableJquery() {
 
     // create data on table
     createDataOnTableJuery(restaurantTypeId);
-
-    $("#selectTypeRestaurant").change(function() {
-        // reset all data on table
-        resetTableJquery();
-
-        // get value from element select
-        var selectRestaurantTypeId = $(this).find(":selected").val();
-
-        // create data on table
-        createDataOnTableJuery(selectRestaurantTypeId);
-    });
 }
+
+/**
+ * function event select change data
+ * dev Somchai O00085
+ */
+$("#selectTypeRestaurant").change(function() {
+    // reset all data on table
+    resetTableJquery();
+
+    // get value from element select
+    var selectRestaurantTypeId = $(this).find(":selected").val();
+
+    // create data on table
+    createDataOnTableJuery(selectRestaurantTypeId);
+});
 
 /**
  * function for create data on table {tableJquery}
@@ -115,7 +119,6 @@ function tableJquery() {
  * @param {*} selectRestaurantTypeId 
  */
 function createDataOnTableJuery(selectRestaurantTypeId) {
-
     // get data from api
     var restaurant = getApiRestaurant("restaurant/all");
 
@@ -150,6 +153,7 @@ function createDataOnTableJuery(selectRestaurantTypeId) {
     // });
 
     var tableName = "#tableJquery";
+    var rowId = 1;
 
     $.each(restaurant, function(index, val) {
         // variable on table {tableJquery}
@@ -164,18 +168,19 @@ function createDataOnTableJuery(selectRestaurantTypeId) {
         if (isAddRow) {
             $(tableName + " tr:last").after(syntaxRows);
 
-            var rowId = index;
-            rowId++;
-
             $(tableName + " tr:eq("+ rowId +")").find("td:eq(0)").text(restaurantName);
             $(tableName + " tr:eq("+ rowId +")").find("td:eq(1)").text(restaurantTypeName);
             $(tableName + " tr:eq("+ rowId +")").find("td:eq(2)").append("<button class='btnAct' id='btnVm-"+ index +"' onclick='viewMenuToRows("+ restaurantId +")'>View Menu</button>");
             $(tableName + " tr:eq("+ rowId +")").find("td:eq(3)").append("<button class='btnAct' id='btnEdit-"+ index +"' onclick='editToRows("+ restaurantId +")'>Edit</button>");
             $(tableName + " tr:eq("+ rowId +")").find("td:eq(4)").append("<button class='btnAct' id='btnDel-"+ index +"' onclick='deleteToRows("+ restaurantId +")'>Delete</button>");
+            
+            rowId++;
 
             setCss(); // set css for element in table
         }
     });
+
+    // console.log($(tableName + " tr").length)
 
     // display not found data on table
     notFoundDataInTable();
@@ -192,7 +197,7 @@ function btnAddNewForm() {
     });
 
     $("#btnAddNewMenu").click(function() {
-        clearValueFormInput();
+        clearValueFormInputMenu();
     });
 }
 
@@ -210,7 +215,7 @@ function saveData() {
         attrButton = $(this).attr("data-status");
 
         // for focus tag select in option
-        $("#selectTypeRestaurant option[value='all']").attr("selected", "selected");
+        $("select#selectTypeRestaurant option[value='all']").attr("selected", "selected");
 
         // get data from prepare {formData}
         prepareDataInForm();
@@ -274,7 +279,7 @@ function saveData() {
         attrButton = $(this).attr("data-status");
 
         // for focus tag select in option
-        $("#selectFoodType option[value='all']").attr("selected", "selected");
+        $("select#selectFoodType option[value='all']").attr("selected", "selected");
 
         // get data from prepare {formDataMenu}
         prepareDataInFormMenu();
@@ -302,7 +307,7 @@ function saveData() {
                     createDataOnTableViewMenu(jsonData.restaurantId, "all");
 
                     // clear data in form input
-                    clearValueFormInput();
+                    clearValueFormInputMenu();
 
                     alert("บันทึกข้อมูลเรียบร้อย");
                 }
@@ -326,7 +331,7 @@ function saveData() {
                     createDataOnTableViewMenu(jsonData.restaurantId, "all");
 
                     // clear data in form input
-                    clearValueFormInput();
+                    clearValueFormInputMenu();
 
                     alert("แก้ไขข้อมูลเรียบร้อย");
                 }
@@ -402,10 +407,11 @@ function deleteToRows(id) {
 function cancelData() {
     $("#btnCancel").click(function() {
         clearValueFormInput();
+        $("div.formViewMenu").hide();
     });
 
     $("#btnCancelMenu").click(function() {
-        clearValueFormInput();
+        clearValueFormInputMenu();
     });
 }
 
@@ -470,7 +476,13 @@ function clearValueFormInput() {
     $("#txtInputRestaurantName").focus();
     $("#selectInputTypeFood").prop("selectedIndex", 0);
     $("#txtInputDetail").val("");
+}
 
+/**
+ * function for clear value in form input menu
+ * dev Somchai O00085
+ */
+function clearValueFormInputMenu() {
     $("#btnSaveMenu").attr("data-status", "saveMenu");
     $("#txtInputFoodName").val("");
     $("#txtInputFoodName").focus();
@@ -506,26 +518,34 @@ function viewMenuToRows(restaurantId) {
  * @param {*} resultRestaurantById
  */
 function tableViewMenu(restaurantId) {
+
     // get value from element select
     var selectFoodTypeId = $("#selectFoodType").find("option:selected").val();
 
     // create data on table {table ViewMenu}
     createDataOnTableViewMenu(restaurantId, selectFoodTypeId);
-
-    $("#selectFoodType").change(function() {
-        // reset all data on table
-        resetTableViewMenu();
-
-        // get value from element select
-        var selectFoodTypeId = $(this).find("option:selected").val();
-
-        // create data on table {table ViewMenu}
-        createDataOnTableViewMenu(restaurantId, selectFoodTypeId);
-
-        // display not found data on table
-        notFoundDataInTableMenu();
-    });
 }
+
+/**
+ * function event select change data
+ * dev Somchai O00085
+ */
+$("#selectFoodType").change(function() {
+    // get data restaurantId from text input hidden
+    var txtRestaurantId = $("#txtInputRestaurantIdHidden").val();
+
+    // reset all data on table
+    resetTableViewMenu();
+
+    // get value from element select
+    var selectFoodTypeId = $(this).find("option:selected").val();
+
+    // create data on table {table ViewMenu}
+    createDataOnTableViewMenu(txtRestaurantId, selectFoodTypeId);
+
+    // display not found data on table
+    notFoundDataInTableMenu();
+});
 
 /**
  * function for create data on table {tableViewMenu}
@@ -536,7 +556,7 @@ function tableViewMenu(restaurantId) {
 function createDataOnTableViewMenu(restaurantId, selectFoodTypeId) {
     // reset all data on table
     resetTableViewMenu();
-
+    
     // get data api from Restaurant by id
     var resultRestaurantById = getDataRestaurantById(restaurantId);
     
@@ -546,6 +566,7 @@ function createDataOnTableViewMenu(restaurantId, selectFoodTypeId) {
     if (resultRestaurantById.food !== null) { // has data in resultRestaurantById >> food
 
         var tableName = "#tableViewMenu";
+        var rowId = 1;
 
         $.each(resultRestaurantById.food, function(index, val) {
             var foodData = searchFood(val); // get food data 
@@ -556,14 +577,13 @@ function createDataOnTableViewMenu(restaurantId, selectFoodTypeId) {
             if (isAddRow) {
                 $("#tableViewMenu tr:last").after(syntaxRows);
 
-                var rowId = index;
-                rowId++;
-
                 $(tableName + " tr:eq("+ rowId +")").find("td:eq(0)").text(foodData.foodName);
                 $(tableName + " tr:eq("+ rowId +")").find("td:eq(1)").text(foodData.categoryName);
                 $(tableName + " tr:eq("+ rowId +")").find("td:eq(2)").text(foodData.price);
                 $(tableName + " tr:eq("+ rowId +")").find("td:eq(3)").append("<button class='btnActVm' id='btnEditVm-"+ index +"' onclick='editVmToRows("+ foodData.foodId +", "+ resultRestaurantById.restaurantId +")'>Edit</button>");
                 $(tableName + " tr:eq("+ rowId +")").find("td:eq(4)").append("<button class='btnActVm' id='btnDelVm-"+ index +"' onclick='deleteVmToRows("+ foodData.foodId +", "+ resultRestaurantById.restaurantId +")'>Delete</button>");
+
+                rowId++;
 
                 setCss();
             }
@@ -617,7 +637,7 @@ function deleteVmToRows(foodId, restaurantId) {
         createDataOnTableViewMenu(restaurantId, selectFoodTypeId);
 
         // clear data in form input
-        clearValueFormInput();
+        clearValueFormInputMenu();
 
         alert("ลบข้อมูลเรียบร้อย");
     }
@@ -670,6 +690,8 @@ function createCssViewMenu() {
         "color": "#ffffff",
         "padding": "15px"
     });
+
+    $("#txtInputFoodPrice").css({"width": "60px"});
 }
 
 /**
